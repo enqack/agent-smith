@@ -31,6 +31,12 @@ func init() {
 
 	// Persistent flags
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/agents/config.yaml)")
+	rootCmd.PersistentFlags().StringSlice("agents-dir", []string{}, "directory containing agent personas (can be specified multiple times)")
+	rootCmd.PersistentFlags().String("target-file", "", "path to the AGENTS.md symlink")
+
+	// Bind flags to viper
+	viper.BindPFlag("agents_dir", rootCmd.PersistentFlags().Lookup("agents-dir"))
+	viper.BindPFlag("target_file", rootCmd.PersistentFlags().Lookup("target-file"))
 }
 
 // initConfig reads in config file and ENV variables if set.

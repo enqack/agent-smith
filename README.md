@@ -1,6 +1,18 @@
 # Agent Smith (agents)
 
 `agents` is a CLI tool for managing `AGENTS.md` symlinks, allowing users to switch between different agent personas easily.
+It aligns with the [AGENTS.md](https://agents.md/) specification by allowing you to dynamically switch the active context for AI agents.
+
+## The Dynamic Context Pattern
+
+The [AGENTS.md](https://agents.md/) specification provides a standard location for agent instructions. However, a single static file can become unwieldy when switching between different types of work (e.g., coding, architecture, documentation).
+
+`agents` solves this by turning `AGENTS.md` into a **dynamic interface**:
+1.  **Define Personas**: Create focused context files like `AGENTS.coder.md` or `AGENTS.architect.md`.
+2.  **Switch Context**: Run `agents use coder`.
+3.  **Standard Compliance**: The tool symlinks your chosen persona to `AGENTS.md`.
+
+This ensures any AI tool looking for `AGENTS.md` automatically receives the specific instructions relevant to your current task.
 
 ## Features
 
