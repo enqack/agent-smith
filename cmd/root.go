@@ -69,7 +69,12 @@ func initConfig() {
 	defaultAgentsDirs = append(defaultAgentsDirs, "/usr/share/agent-smith/agents")
 
 	viper.SetDefault("agents_dir", defaultAgentsDirs)
-	viper.SetDefault("target_file", "AGENTS.md")
+	if err == nil {
+		viper.SetDefault("target_file", filepath.Join(home, ".config", "agents", "AGENTS.md"))
+	} else {
+		// Fallback if home directory not found (unlikely for user)
+		viper.SetDefault("target_file", "AGENTS.md")
+	}
 
 	viper.AutomaticEnv() // read in environment variables that match
 

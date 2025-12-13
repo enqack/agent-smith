@@ -14,7 +14,7 @@ var useCmd = &cobra.Command{
 	Use:   "use [persona]",
 	Short: "Switch to a specific agent persona",
 	Long: `Switch the current AGENTS.md symlink to point to the specified agent persona.
-Example: agent-smith use coder`,
+Example: agents use coder`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		persona := args[0]
@@ -46,6 +46,13 @@ Example: agent-smith use coder`,
 			for _, dir := range agentsDirs {
 				fmt.Printf("  - %s\n", dir)
 			}
+			return
+		}
+
+		// Ensure target directory exists (especially since default is now ~/.config/agents/AGENTS.md)
+		targetDir := filepath.Dir(targetFile)
+		if err := os.MkdirAll(targetDir, 0755); err != nil {
+			fmt.Printf("Error creating target directory %s: %v\n", targetDir, err)
 			return
 		}
 

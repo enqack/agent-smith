@@ -63,7 +63,7 @@ Example `config.yaml`:
 agents_dir: 
   - "/path/to/primary/agents"
   - "/path/to/fallback/agents"
-target_file: "./AGENTS.md"
+target_file: "~/.config/agents/AGENTS.md"
 ```
 
 ### Commands
