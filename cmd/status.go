@@ -17,6 +17,13 @@ var statusCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		targetFile := viper.GetString("target_file")
 
+		// If the user didn't explicitly set the flag, try to load from state
+		if !cmd.Flags().Changed("target-file") {
+			if state, err := loadState(); err == nil && state.LastTargetFile != "" {
+				targetFile = state.LastTargetFile
+			}
+		}
+
 		// Check if file exists
 		info, err := os.Lstat(targetFile)
 		if err != nil {

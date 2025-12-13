@@ -49,7 +49,7 @@ Example: agents use coder`,
 			return
 		}
 
-		// Ensure target directory exists (especially since default is now ~/.config/agents/AGENTS.md)
+		// Ensure target directory exists
 		targetDir := filepath.Dir(targetFile)
 		if err := os.MkdirAll(targetDir, 0755); err != nil {
 			fmt.Printf("Error creating target directory %s: %v\n", targetDir, err)
@@ -77,6 +77,12 @@ Example: agents use coder`,
 		if err != nil {
 			fmt.Printf("Error creating symlink: %v\n", err)
 			return
+		}
+
+		// Save state for 'status' command
+		if err := saveState(targetFile, persona); err != nil {
+			// Don't fail the operation, but warn user
+			fmt.Printf("Warning: Failed to save status state: %v\n", err)
 		}
 
 		fmt.Printf("Switched to agent: %s\n", persona)

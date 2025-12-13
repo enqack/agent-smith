@@ -14,7 +14,7 @@
           pname = "agents";
           version = "0.1.0";
           src = ./.;
-          vendorHash = "sha256-7IRhAvP18cHX4/nmZs0oCNiVCuJMtJCvQkXHihNP7RE=";
+          vendorHash = "sha256-hicKdQauPnxag4DFS+xoYxwwXFSmPUsTm3y3Cxuw8UM=";
 
 
           postInstall = ''

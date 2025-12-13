@@ -30,7 +30,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	// Persistent flags
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/agents/config.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/agent-smith/config.yaml)")
 	rootCmd.PersistentFlags().StringSlice("agents-dir", []string{}, "directory containing agent personas (can be specified multiple times)")
 	rootCmd.PersistentFlags().String("target-file", "", "path to the AGENTS.md symlink")
 
@@ -45,20 +45,20 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Search config in home directory and /etc/agents
+		// Search config in home directory and /etc/agent-smith
 		home, err := os.UserHomeDir()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		viper.AddConfigPath(filepath.Join(home, ".config", "agents"))
-		viper.AddConfigPath("/etc/agents")
+		viper.AddConfigPath(filepath.Join(home, ".config", "agent-smith"))
+		viper.AddConfigPath("/etc/agent-smith")
 		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
 
 		// Ensure local config directory exists
-		configDir := filepath.Join(home, ".config", "agents")
+		configDir := filepath.Join(home, ".config", "agent-smith")
 		if err := os.MkdirAll(configDir, 0755); err != nil {
 			// Not fatal, but good to know
 			// fmt.Printf("Warning: Could not create config directory: %v\n", err)
@@ -69,7 +69,6 @@ func initConfig() {
 	var defaultAgentsDirs []string
 	home, err := os.UserHomeDir()
 	if err == nil {
-		defaultAgentsDirs = append(defaultAgentsDirs, filepath.Join(home, ".config", "agents"))
 		defaultAgentsDirs = append(defaultAgentsDirs, filepath.Join(home, ".config", "agent-smith", "agents"))
 	}
 	defaultAgentsDirs = append(defaultAgentsDirs, "/usr/share/agent-smith/agents")

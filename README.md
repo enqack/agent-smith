@@ -61,13 +61,12 @@ go build -o bin/agents .
 ### Configuration
 
 By default, `agents` looks for agent personas in the following order:
-1. `$HOME/.config/agents`
-2. `$HOME/.config/agent-smith/agents`
-3. `/usr/share/agent-smith/agents`
+1. `$HOME/.config/agent-smith/agents`
+2. `/usr/share/agent-smith/agents`
 
 You can override this by configuring `agents_dir` in:
-- `$HOME/.config/agents/config.yaml`
-- `/etc/agents/config.yaml`
+- `$HOME/.config/agent-smith/config.yaml`
+- `/etc/agent-smith/config.yaml`
 
 Example `config.yaml`:
 
@@ -76,6 +75,19 @@ agents_dir:
   - "/path/to/primary/agents"
   - "/path/to/fallback/agents"
 target_file: "~/.config/agents/AGENTS.md"
+```
+
+### Flags
+
+You can override configuration values at runtime using flags:
+
+- `--agents-dir`: Specify one or more directories to search for agents.
+- `--target-file`: Specify the path to the `AGENTS.md` symlink.
+
+Example:
+```bash
+agents list --agents-dir ./my-agents
+agents use coder --target-file ./AGENTS.md
 ```
 
 ### Commands
