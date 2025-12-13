@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
@@ -24,7 +23,7 @@ Personas are defined in files named AGENTS.<persona>.md`,
 			}
 		}
 
-		fmt.Println("Available Agents:")
+		cmd.Println("Available Agents:")
 		foundAny := false
 
 		seen := make(map[string]bool)
@@ -55,7 +54,7 @@ Personas are defined in files named AGENTS.<persona>.md`,
 					// Extract persona name: AGENTS.coder.md -> coder
 					persona := strings.TrimSuffix(strings.TrimPrefix(name, "AGENTS."), ".md")
 					if !seen[persona] {
-						fmt.Printf("  - %s (%s)\n", persona, agentsDir)
+						cmd.Printf("  - %s (%s)\n", persona, agentsDir)
 						seen[persona] = true
 						foundAny = true
 					}
@@ -64,7 +63,7 @@ Personas are defined in files named AGENTS.<persona>.md`,
 		}
 
 		if !foundAny {
-			fmt.Println("  (No agents found)")
+			cmd.Println("  (No agents found)")
 		}
 	},
 }

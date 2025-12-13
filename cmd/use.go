@@ -41,10 +41,10 @@ Example: agents use coder`,
 		}
 
 		if !found {
-			fmt.Printf("Error: Agent persona '%s' not found.\n", persona)
-			fmt.Printf("Searched in:\n")
+			cmd.Printf("Error: Agent persona '%s' not found.\n", persona)
+			cmd.Printf("Searched in:\n")
 			for _, dir := range agentsDirs {
-				fmt.Printf("  - %s\n", dir)
+				cmd.Printf("  - %s\n", dir)
 			}
 			return
 		}
@@ -52,7 +52,7 @@ Example: agents use coder`,
 		// Ensure target directory exists (especially since default is now ~/.config/agents/AGENTS.md)
 		targetDir := filepath.Dir(targetFile)
 		if err := os.MkdirAll(targetDir, 0755); err != nil {
-			fmt.Printf("Error creating target directory %s: %v\n", targetDir, err)
+			cmd.Printf("Error creating target directory %s: %v\n", targetDir, err)
 			return
 		}
 
@@ -60,7 +60,7 @@ Example: agents use coder`,
 		if _, err := os.Lstat(targetFile); err == nil {
 			err = os.Remove(targetFile)
 			if err != nil {
-				fmt.Printf("Error removing existing %s: %v\n", targetFile, err)
+				cmd.Printf("Error removing existing %s: %v\n", targetFile, err)
 				return
 			}
 		}
@@ -75,11 +75,11 @@ Example: agents use coder`,
 
 		err = os.Symlink(absAgentPath, targetFile)
 		if err != nil {
-			fmt.Printf("Error creating symlink: %v\n", err)
+			cmd.Printf("Error creating symlink: %v\n", err)
 			return
 		}
 
-		fmt.Printf("Switched to agent: %s\n", persona)
+		cmd.Printf("Switched to agent: %s\n", persona)
 	},
 }
 
