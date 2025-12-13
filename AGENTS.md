@@ -1,0 +1,1 @@
+/home/sysop/.config/agent-smith/agents/AGENTS.general.md
