@@ -16,22 +16,27 @@
           src = ./.;
           vendorHash = "sha256-hicKdQauPnxag4DFS+xoYxwwXFSmPUsTm3y3Cxuw8UM=";
 
-          ldflags = [ "-X agent-smith/cmd.Version=${version}" ];
+          ldflags = [ "-X agent-smith/internal/cli.Version=${version}" ];
 
 
           nativeBuildInputs = [ pkgs.pandoc ];
 
           postInstall = ''
-            mv $out/bin/agent-smith $out/bin/agents
+            # Binary is already named 'agents' because it comes from cmd/agents
             mkdir -p $out/share/agent-smith/agents
             mkdir -p $out/etc/agent-smith/agents
 
             mkdir -p $out/share/man/man1
-            pandoc -s -t man README.md -o $out/share/man/man1/agents.1 \
-              -V title=AGENTS \
-              -V section=1 \
-              -V date="$(date +%Y-%m-%d)" \
-              -V header="Agent Smith Manual"
+            mkdir -p $out/share/man/man1
+            pandoc -s -t man docs/man/agents.1.md -o $out/share/man/man1/agents.1
+
+            mkdir -p $out/share/man/man5
+            pandoc -s -t man docs/man/agents-config.5.md -o $out/share/man/man5/agents-config.5
+
+            mkdir -p $out/share/man/man7
+            pandoc -s -t man docs/man/agents-format.7.md -o $out/share/man/man7/agents-format.7
+
+            pandoc -s -t man docs/man/agents-status.5.md -o $out/share/man/man5/agents-status.5
           '';
 
           meta.mainProgram = "agents";
@@ -55,6 +60,10 @@
             gotools
             go-tools
             pandoc
+            python3Packages.sphinx
+            python3Packages.myst-parser
+            python3Packages.furo
+            python3Packages.sphinx-copybutton
           ];
 
           shellHook = ''

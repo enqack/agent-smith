@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -50,12 +49,34 @@ func Test() error {
 // Docs generates the man page
 func Docs() error {
 	fmt.Println("Generating man page...")
-	date := time.Now().Format("2006-01-02")
-	return sh.RunV("nix", "run", "nixpkgs#pandoc", "--",
-		"-s", "-t", "man", "README.md", "-o", "agents.1",
-		"-V", "title=AGENTS",
-		"-V", "section=1",
-		"-V", fmt.Sprintf("date=%s", date),
-		"-V", "header=Agent Smith Manual",
+	err := sh.RunV("nix", "run", "nixpkgs#pandoc", "--",
+		"-s", "-t", "man", "docs/man/agents.1.md", "-o", "agents.1",
 	)
+	if err != nil {
+		return err
+	}
+
+	err = sh.RunV("nix", "run", "nixpkgs#pandoc", "--",
+		"-s", "-t", "man", "docs/man/agents-config.5.md", "-o", "agents-config.5",
+	)
+	if err != nil {
+		return err
+	}
+
+	err = sh.RunV("nix", "run", "nixpkgs#pandoc", "--",
+		"-s", "-t", "man", "docs/man/agents-format.7.md", "-o", "agents-format.7",
+	)
+	if err != nil {
+		return err
+	}
+
+	return sh.RunV("nix", "run", "nixpkgs#pandoc", "--",
+		"-s", "-t", "man", "docs/man/agents-status.5.md", "-o", "agents-status.5",
+	)
+}
+
+// Site generates the static documentation site
+func Site() error {
+	fmt.Println("Generating documentation site...")
+	return sh.RunV("sphinx-build", "-b", "html", "docs", "docs/_build")
 }

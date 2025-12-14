@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2025-12-14
+
+### Documentation System Overhaul
+- **Read the Docs Integration**: Migrated documentation system to Sphinx + MyST + Furo theme.
+- **Documentation Map**: Created `docs/index.md` as the unified entry point for guides and reference manual.
+- **Canonical Source Linking**: Linked root documents (`CONTRIBUTING.md`, `CHANGELOG.md`, `LICENSE`) into `docs/` to avoid duplication.
+- **Build System**: Updated `flake.nix` and `magefile.go` to support Sphinx builds.
+- **CI/CD**: Added `Build Docs` step to GitHub Actions.
+- **Cleanup**: Removed deprecated `mkdocs.yml`.
+
+### Refactoring & Architecture
+
+- **Canonical Target as Source of Truth**: The main symlink (default `$XDG_CONFIG_HOME/agents/AGENTS.md`) is now the single source of truth for the active persona.
+- **Reconcile**: Now respects manual changes to the main symlink (drift) and propagates them to secondary targets.
+- **Use**: Optimized to calculate targets once and fail fast.
+- **Unuse**: Now explicitly clears internal state to prevent "resurrection" of old targets.
+- **Robustness**: 
+    - Fixed potential resource leaks (`defer` in loop).
+    - Added `chmod 0644` to copied files.
+    - Downgraded `go.mod` to stable 1.23.0.
+    - **State Management**: `SaveState` now **replaces** targets for a persona instead of merging/accumulating, preventing stale targets from persisting.
+    - **Drop Safety**: Added guard to prevent `drop` from removing directories.
+- **Modularization**: Restructured codebase to Domain-Driven Design layout. Moved CLI logic to `internal/cli`, state management to `internal/state`, configuration to `internal/config`, and operations to `internal/ops`.
+- **ApplyPersona**: Improved reliability and error reporting in `internal/ops/apply.go`.
+- **Environment Handling**: robust mapping of environment variables to configuration (e.g., `AGENTS_TARGET_FILE`).
+
+### Features
+
+- **Multi-Persona Status**: `status` command now lists all tracked personas in the state file, indicating active status for each ([internal/cli/status.go](file:///home/sysop/Projects/agent-smith/internal/cli/status.go)).
+- **Multi-Target Accumulation**: `use` command now merges targets for the same persona instead of overwriting, enabling complex setups with multiple links/copies per persona.
+- **Enhanced Error Reporting**: CLI now consistently returns non-zero exit codes on failure and provides clearer error messages for permissions and missing files.
+
+### Testing
+
+- **End-to-End Suite**: Implemented comprehensive E2E tests in `tests/e2e/` covering:
+    - **Flows**: Happy path for `list`, `use`, `status`, `reconcile`.
+    - **Configuration Precedence**: Verified Flag > Env > Config File priority.
+    - **Error Recovery**: Automated verification of recovery from missing files, drift, and permission errors.
+- **Unit Tests**: Added dedicated unit tests for `config`, `ops`, and `state` packages.
+
+### CI/CD
+
+- **GitHub Actions**: Added `.github/workflows/ci.yml` to run `nix flake check`, unit tests, and E2E tests on detailed PRs and main branch pushes.
+- **Contribution Guide**: Added `CONTRIBUTING.md` with development instructions.
+
+### Documentation
+
+- **Refactoring**: Separated `README.md` to focus on high-level overview. Technical reference moved to `docs/man/`.
+- **Man Pages**: Added comprehensive man page suite:
+    - `agents(1)`: Main CLI reference.
+    - `agents-config(5)`: Configuration file format.
+    - `agents-status(5)`: Internal status file format.
+    - `agents-format(7)`: AGENTS.md concepts and specifications.
+
 ## [0.2.0] - 2025-12-13
 
 ### Core Features & Logic

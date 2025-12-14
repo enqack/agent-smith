@@ -1,15 +1,25 @@
-package cmd
+package cli
 
 import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"agent-smith/internal/config"
+	"agent-smith/internal/ops"
 )
 
-var cfgFile string
+var (
+	// Used for flags.
+	cfgFile string
+
+	// Cfg stores the global configuration
+	Cfg config.Config
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -31,13 +41,21 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	// Persistent flags
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/agent-smith/config.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $XDG_CONFIG_HOME/agent-smith/config.yaml)")
+
+	// Bind flags to viper (legacy flags kept if needed, but per previous edits we want standard XDG)
+	// We previously had agents-dir etc. Let's keep them reachable via flags if user wants overrides.
 	rootCmd.PersistentFlags().StringSlice("agents-dir", []string{}, "directory containing agent personas (can be specified multiple times)")
 	rootCmd.PersistentFlags().String("target-file", "", "path to the AGENTS.md symlink")
 
-	// Bind flags to viper
+	// Bind agents_dir to viper
 	viper.BindPFlag("agents_dir", rootCmd.PersistentFlags().Lookup("agents-dir"))
-	viper.BindPFlag("target_file", rootCmd.PersistentFlags().Lookup("target-file"))
+
+	// Note: We DO NOT bind "target-file" flag to "target_file" config.
+	// The flag is ephemeral (where to write NOW), the config is persistent (System Canonical Path).
+	// viper.BindPFlag("target_file", rootCmd.PersistentFlags().Lookup("target-file"))
+
+	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -46,16 +64,15 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Search config in XDG_CONFIG_HOME/agent-smith (e.g. ~/.config/agent-smith)
-		// and /etc/agent-smith
-		configHome, err := getConfigHome()
+		// Find config directory
+		configHome, err := config.GetConfigHome()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Error getting config home:", err)
 			os.Exit(1)
 		}
 
+		// Search config in home directory with name "config" (without extension).
 		viper.AddConfigPath(filepath.Join(configHome, "agent-smith"))
-		viper.AddConfigPath("/etc/agent-smith")
 		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
 
@@ -69,7 +86,7 @@ func initConfig() {
 
 	// Set defaults
 	var defaultAgentsDirs []string
-	dataHome, err := getDataHome()
+	dataHome, err := config.GetDataHome()
 	if err == nil {
 		defaultAgentsDirs = append(defaultAgentsDirs, filepath.Join(dataHome, "agent-smith", "personas"))
 	}
@@ -77,18 +94,49 @@ func initConfig() {
 
 	viper.SetDefault("agents_dir", defaultAgentsDirs)
 
-	configHome, err := getConfigHome()
+	cHome, err := config.GetConfigHome()
 	if err == nil {
-		viper.SetDefault("target_file", filepath.Join(configHome, "agents", "AGENTS.md"))
+		// Canonical Target: $XDG_CONFIG_HOME/agents/AGENTS.md
+		viper.SetDefault("target_file", filepath.Join(cHome, "agents", "AGENTS.md"))
 	} else {
 		// Fallback
 		viper.SetDefault("target_file", "AGENTS.md")
 	}
 
+	viper.SetEnvPrefix("AGENTS")
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		// fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+
+	// Unmarshal config
+	if err := viper.Unmarshal(&Cfg); err != nil {
+		fmt.Printf("Error parsing config: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Backward Compatibility:
+	// If 'target_file' is set but not in 'targets', add it as a managed target (LINK mode).
+	// This ensures legacy users still get their main symlink managed/monitored.
+	if Cfg.TargetFile != "" {
+		found := false
+		absTarget, _ := filepath.Abs(ops.ExpandPath(Cfg.TargetFile))
+
+		for _, t := range Cfg.Targets {
+			tAbs, _ := filepath.Abs(ops.ExpandPath(t.Path))
+			if tAbs == absTarget {
+				found = true
+				break
+			}
+		}
+		if !found {
+			Cfg.Targets = append(Cfg.Targets, config.TargetConfig{
+				Path: Cfg.TargetFile,
+				Mode: config.TargetModeLink,
+			})
+		}
 	}
 }

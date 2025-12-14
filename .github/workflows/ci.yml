@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+    
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Flake Check (Builds & Checks)
+        run: nix flake check
+
+      - name: Unit Tests
+        # Run unit tests separately from e2e
+        run: nix develop --command go test -v ./internal/...
+
+      - name: End-to-End Tests
+        # Run E2E suite
+        run: nix develop --command go test -v ./tests/e2e/...
+
+      - name: Build Docs
+        run: nix develop --command mage Site

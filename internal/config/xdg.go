@@ -1,12 +1,12 @@
-package cmd
+package config
 
 import (
 	"os"
 	"path/filepath"
 )
 
-// getConfigHome returns the XDG_CONFIG_HOME or default ~/.config
-func getConfigHome() (string, error) {
+// GetConfigHome returns the XDG_CONFIG_HOME or default ~/.config
+func GetConfigHome() (string, error) {
 	if xdgConfigHome := os.Getenv("XDG_CONFIG_HOME"); xdgConfigHome != "" {
 		return xdgConfigHome, nil
 	}
@@ -17,8 +17,8 @@ func getConfigHome() (string, error) {
 	return filepath.Join(home, ".config"), nil
 }
 
-// getDataHome returns the XDG_DATA_HOME or default ~/.local/share
-func getDataHome() (string, error) {
+// GetDataHome returns the XDG_DATA_HOME or default ~/.local/share
+func GetDataHome() (string, error) {
 	if xdgDataHome := os.Getenv("XDG_DATA_HOME"); xdgDataHome != "" {
 		return xdgDataHome, nil
 	}
@@ -29,8 +29,8 @@ func getDataHome() (string, error) {
 	return filepath.Join(home, ".local", "share"), nil
 }
 
-// getStateHome returns the XDG_STATE_HOME or default ~/.local/state
-func getStateHome() (string, error) {
+// GetStateHome returns the XDG_STATE_HOME or default ~/.local/state
+func GetStateHome() (string, error) {
 	if xdgStateHome := os.Getenv("XDG_STATE_HOME"); xdgStateHome != "" {
 		return xdgStateHome, nil
 	}

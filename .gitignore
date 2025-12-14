@@ -18,11 +18,17 @@
 go.work
 
 # Project binaries
-/bin/
+bin
 
 # Result directory
-/result/
+result
 
 # User specific config (if we had any locally during dev, though we used /tmp)
 *.local.yaml
 *.1
+
+# MkDocs output
+site/
+
+# Sphinx output
+docs/_build/
