@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.3] - 2025-12-14
+
+### Documentation
+- **Organization**: Refactored Man Pages to have a single top-level Title (# H1) and shifted all other sections down (# H2) to fix the flatten Table of Contents on ReadTheDocs/Sphinx.
+- **Versioning**: Updated `docs/conf.py` to read the version dynamically from the `VERSION` file.
+
+### Build System
+- **Cleanup**: Updated `.gitignore` to exclude generated man pages and removed them from the root directory.
+- **Magefile**: Updated `Docs` target to support the new header structure (`--shift-heading-level-by=-1`) and output to `docs/_build/man/`.
+- **Nix**: Updated `flake.nix` to use `pandoc --shift-heading-level-by=-1` during installation.
+
 ## [0.3.2] - 2025-12-14
 
 ### Documentation

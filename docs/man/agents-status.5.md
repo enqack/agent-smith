@@ -5,25 +5,27 @@ header: Agent Smith Manual
 date: 2025-12-14
 ---
 
-# NAME
+# agents-status(5)
+
+## NAME
 
 agents-status - internal state file for Agent Smith
 
-# SYNOPSIS
+## SYNOPSIS
 
 **$XDG_STATE_HOME/agent-smith/status.yaml**
 
-# DESCRIPTION
+## DESCRIPTION
 
 The `status.yaml` file persists the internal state of **agents**(1). It tracks the active persona and the list of files managed for each persona.
 
 **WARNING**: This file is managed automatically by the `agents` CLI. Manual editing is discouraged and may lead to inconsistent state.
 
-# FILE FORMAT
+## FILE FORMAT
 
 The file uses YAML format with the following structure:
 
-## Top-Level Fields
+### Top-Level Fields
 
 * **canonical_target** (string):
   The absolute path to the currently active canonical symlink (Source of Truth).
@@ -31,7 +33,7 @@ The file uses YAML format with the following structure:
 * **agent_files** (list):
   A list of tracked personas and their associated targets.
 
-## Agent File Object
+### Agent File Object
 
 Each entry in `agent_files` represents a known persona:
 
@@ -39,7 +41,7 @@ Each entry in `agent_files` represents a known persona:
 * **path** (string): The absolute path to the source definition file (e.g., `.../AGENTS.coder.md`).
 * **targets** (list): A list of target files managed for this persona.
 
-## Target Object
+### Target Object
 
 Each entry in `targets` represents a specific file or symlink updated when this persona is active:
 
@@ -48,7 +50,7 @@ Each entry in `targets` represents a specific file or symlink updated when this 
     * `link`: The target is a symbolic link to the source.
     * `copy`: The target is a copy of the source.
 
-# EXAMPLE
+## EXAMPLE
 
 ```yaml
 canonical_target: /home/user/.config/agents/AGENTS.md
@@ -67,6 +69,6 @@ agent_files:
         mode: link
 ```
 
-# SEE ALSO
+## SEE ALSO
 
 **agents**(1), **agents-config**(5)

@@ -28,15 +28,15 @@
 
             mkdir -p $out/share/man/man1
             mkdir -p $out/share/man/man1
-            pandoc -s -t man docs/man/agents.1.md -o $out/share/man/man1/agents.1
+            pandoc -s -t man --shift-heading-level-by=-1 docs/man/agents.1.md -o $out/share/man/man1/agents.1
 
             mkdir -p $out/share/man/man5
-            pandoc -s -t man docs/man/agents-config.5.md -o $out/share/man/man5/agents-config.5
+            pandoc -s -t man --shift-heading-level-by=-1 docs/man/agents-config.5.md -o $out/share/man/man5/agents-config.5
 
             mkdir -p $out/share/man/man7
-            pandoc -s -t man docs/man/agents-format.7.md -o $out/share/man/man7/agents-format.7
+            pandoc -s -t man --shift-heading-level-by=-1 docs/man/agents-format.7.md -o $out/share/man/man7/agents-format.7
 
-            pandoc -s -t man docs/man/agents-status.5.md -o $out/share/man/man5/agents-status.5
+            pandoc -s -t man --shift-heading-level-by=-1 docs/man/agents-status.5.md -o $out/share/man/man5/agents-status.5
           '';
 
           meta.mainProgram = "agents";

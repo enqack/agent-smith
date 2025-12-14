@@ -49,29 +49,33 @@ func Test() error {
 // Docs generates the man page
 func Docs() error {
 	fmt.Println("Generating man page...")
+	if err := os.MkdirAll("docs/_build/man", 0755); err != nil {
+		return fmt.Errorf("failed to create output directory: %w", err)
+	}
+
 	err := sh.RunV("nix", "run", "nixpkgs#pandoc", "--",
-		"-s", "-t", "man", "docs/man/agents.1.md", "-o", "agents.1",
+		"-s", "-t", "man", "--shift-heading-level-by=-1", "docs/man/agents.1.md", "-o", "docs/_build/man/agents.1",
 	)
 	if err != nil {
 		return err
 	}
 
 	err = sh.RunV("nix", "run", "nixpkgs#pandoc", "--",
-		"-s", "-t", "man", "docs/man/agents-config.5.md", "-o", "agents-config.5",
+		"-s", "-t", "man", "--shift-heading-level-by=-1", "docs/man/agents-config.5.md", "-o", "docs/_build/man/agents-config.5",
 	)
 	if err != nil {
 		return err
 	}
 
 	err = sh.RunV("nix", "run", "nixpkgs#pandoc", "--",
-		"-s", "-t", "man", "docs/man/agents-format.7.md", "-o", "agents-format.7",
+		"-s", "-t", "man", "--shift-heading-level-by=-1", "docs/man/agents-format.7.md", "-o", "docs/_build/man/agents-format.7",
 	)
 	if err != nil {
 		return err
 	}
 
 	return sh.RunV("nix", "run", "nixpkgs#pandoc", "--",
-		"-s", "-t", "man", "docs/man/agents-status.5.md", "-o", "agents-status.5",
+		"-s", "-t", "man", "--shift-heading-level-by=-1", "docs/man/agents-status.5.md", "-o", "docs/_build/man/agents-status.5",
 	)
 }
 

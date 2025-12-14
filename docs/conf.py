@@ -7,7 +7,10 @@ import sys
 project = 'Agent Smith'
 copyright = '2025, Enqack'
 author = 'Enqack'
-release = '0.3.0'
+
+# Read version from VERSION file
+with open(os.path.join(os.path.dirname(__file__), '..', 'VERSION')) as f:
+    release = f.read().strip()
 
 # -- General configuration ---------------------------------------------------
 extensions = [

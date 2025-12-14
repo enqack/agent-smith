@@ -5,21 +5,23 @@ header: Agent Smith Manual
 date: 2025-12-14
 ---
 
-# NAME
+# agents-config(5)
+
+## NAME
 
 agents-config - configuration file for Agent Smith
 
-# SYNOPSIS
+## SYNOPSIS
 
 **$XDG_CONFIG_HOME/agent-smith/config.yaml**
 
-# DESCRIPTION
+## DESCRIPTION
 
 The `config.yaml` file controls the behavior of the **agents**(1) CLI tool, defining where personas are found and how targets are managed.
 
-# CONFIGURATION OPTIONS
+## CONFIGURATION OPTIONS
 
-## agents_dir (list of strings)
+### agents_dir (list of strings)
 
 A list of directories to search for agent persona files (e.g., `AGENTS.coder.md`).
 
@@ -34,7 +36,7 @@ agents_dir:
   - "/shared/team-personas"
 ```
 
-## target_file (string)
+### target_file (string)
 
 The path to the **Canonical Target** symlink. This link acts as the Source of Truth for the active persona.
 
@@ -45,7 +47,7 @@ The path to the **Canonical Target** symlink. This link acts as the Source of Tr
 target_file: "/home/user/.config/agents/AGENTS.md"
 ```
 
-## targets (list of objects)
+### targets (list of objects)
 
 A list of additional targets to manage automatically. These will be updated by **agents**(1) (specifically the `reconcile` and `use` commands).
 
@@ -62,7 +64,7 @@ targets:
     mode: "link"
 ```
 
-# PRECEDENCE
+## PRECEDENCE
 
 Configuration is resolved in the following order (highest priority first):
 1. CLI Flags (`--target-file`)
@@ -70,6 +72,6 @@ Configuration is resolved in the following order (highest priority first):
 3. Config File (`config.yaml`)
 4. Defaults
 
-# SEE ALSO
+## SEE ALSO
 
 **agents**(1), **agents-format**(7)

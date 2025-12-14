@@ -5,27 +5,29 @@ header: Agent Smith Manual
 date: 2025-12-14
 ---
 
-# NAME
+# agents(1)
+
+## NAME
 
 agents - switch between different agent personas using symlinks
 
-# SYNOPSIS
+## SYNOPSIS
 
 **agents** [command] [flags]
 
-# DESCRIPTION
+## DESCRIPTION
 
 **agents** is a CLI tool for managing `AGENTS.md` symlinks. It allows you to define multiple "personas" (e.g., `AGENTS.coder.md`, `AGENTS.writer.md`) and quickly switch the active context for AI agents by updating a canonical symlink.
 
 It adheres to the **Canonical Target as Source of Truth** pattern: the state of the symlink determines the active persona.
 
-# COMMANDS
+## COMMANDS
 
-## list
+### list
 
 List all available agent personas found in the configured `agents_dir`.
 
-## use [persona]
+### use [persona]
 
 Switch the active persona to the specified one.
 
@@ -40,7 +42,7 @@ Switch the active persona to the specified one.
 **Flags:**
 * `--target-file`: Specify an additional target to apply/track for this operation.
 
-## status
+### status
 
 Show the current status of the agent system.
 
@@ -50,7 +52,7 @@ Show the current status of the agent system.
     * `[DRIFT]`: Points to a different persona.
     * `[MISSING]`: File does not exist.
 
-## reconcile
+### reconcile
 
 Re-apply the currently active persona to all configured targets.
 
@@ -60,7 +62,7 @@ Fixes drift or restores missing files.
 **Drift Handling:**
 If you manually change the canonical symlink (e.g., `ln -sf ...`), `reconcile` accepts this change as the new truth and updates all other targets to match it.
 
-## unuse
+### unuse
 
 Deactivate the current persona.
 
@@ -68,38 +70,38 @@ Deactivate the current persona.
 * Removes all other tracked targets.
 * Clears the active persona from state.
 
-## drop [persona]
+### drop [persona]
 
 Stop tracking a specific target or an entire persona.
 
 **Example:**
 `agents drop coder --target-file ./local_copy.md`
 
-## version
+### version
 
 Print the version number.
 
-# CONFIGURATION
+## CONFIGURATION
 
 The tool follows the XDG Base Directory Specification.
 
-## Files
+### Files
 
 * **Configuration**: `$XDG_CONFIG_HOME/agent-smith/config.yaml` (default: `~/.config/agent-smith/config.yaml`)
 * **Personas**: `$XDG_DATA_HOME/agent-smith/personas` (default: `~/.local/share/agent-smith/personas`)
 * **State**: `$XDG_STATE_HOME/agent-smith/status.yaml` (default: `~/.local/state/agent-smith/status.yaml`)
 
-## Canonical Target
+### Canonical Target
 
 The **active persona link** (Source of Truth) defaults to:
 `$XDG_CONFIG_HOME/agents/AGENTS.md`
 
-## Environment Variables
+### Environment Variables
 
 * `AGENTS_TARGET_FILE`: Override the path to the canonical symlink.
 * `AGENTS_AGENTS_DIR`: Override the directory to search for personas.
 
-# EXAMPLES
+## EXAMPLES
 
 **List available personas:**
 ```bash
