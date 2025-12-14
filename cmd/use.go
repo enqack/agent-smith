@@ -12,8 +12,8 @@ import (
 // useCmd represents the use command
 var useCmd = &cobra.Command{
 	Use:   "use [persona]",
-	Short: "Switch to a specific agent persona",
-	Long: `Switch the current AGENTS.md symlink to point to the specified agent persona.
+	Short: "Switch to a specific persona",
+	Long: `Switch the current AGENTS.md symlink to point to the specified persona.
 Example: agents use coder`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -41,7 +41,7 @@ Example: agents use coder`,
 		}
 
 		if !found {
-			fmt.Printf("Error: Agent persona '%s' not found.\n", persona)
+			fmt.Printf("Error: Persona '%s' not found.\n", persona)
 			fmt.Printf("Searched in:\n")
 			for _, dir := range agentsDirs {
 				fmt.Printf("  - %s\n", dir)
@@ -85,7 +85,8 @@ Example: agents use coder`,
 			fmt.Printf("Warning: Failed to save status state: %v\n", err)
 		}
 
-		fmt.Printf("Switched to agent: %s\n", persona)
+		fmt.Println("The mind was never changed; only where it points.")
+		fmt.Printf("Persona switched: %s\n", persona)
 	},
 }
 

@@ -49,7 +49,7 @@ nix run .#fhs -- list
 
 ### Manual Build
 
-Requries Go 1.21+.
+Requires Go 1.21+.
 
 ```bash
 go build -o bin/agents .
@@ -59,58 +59,67 @@ go build -o bin/agents .
 ## Usage
 
 ### Configuration
-
-By default, `agents` looks for agent personas in the following order:
-1. `$HOME/.config/agent-smith/agents`
-2. `/usr/share/agent-smith/agents`
-
-You can override this by configuring `agents_dir` in:
-- `$HOME/.config/agent-smith/config.yaml`
-- `/etc/agent-smith/config.yaml`
-
-Example `config.yaml`:
-
+ 
+By default, `agents` follows the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html).
+ 
+It looks for agent personas in:
+1. `$XDG_DATA_HOME/agent-smith/personas` (default: `$HOME/.local/share/agent-smith/personas`)
+2. `/usr/share/agent-smith/personas`
+ 
+It looks for configuration in:
+1. `$XDG_CONFIG_HOME/agent-smith/config.yaml` (default: `$HOME/.config/agent-smith/config.yaml`)
+2. `/etc/agent-smith/config.yaml`
+ 
+You can override the agents directory by configuring `agents_dir` in `config.yaml`:
+ 
 ```yaml
 agents_dir: 
   - "/path/to/primary/agents"
   - "/path/to/fallback/agents"
 target_file: "~/.config/agents/AGENTS.md"
 ```
-
+ 
 ### Flags
-
+ 
 You can override configuration values at runtime using flags:
-
-- `--agents-dir`: Specify one or more directories to search for agents.
+ 
+- `--agents-dir`: Specify one or more directories to search for personas.
 - `--target-file`: Specify the path to the `AGENTS.md` symlink.
-
+ 
 Example:
 ```bash
 agents list --agents-dir ./my-agents
 agents use coder --target-file ./AGENTS.md
 ```
-
+ 
 ### Commands
-
-#### List available agents
-
+ 
+#### List available personas
+ 
 ```bash
 agents list
 ```
-
-#### Switch to an agent
-
+ 
+#### Switch to a persona
+ 
 ```bash
 agents use coder
 ```
 This will link `AGENTS.md` to `AGENTS.coder.md` found in your `agents_dir`.
-
+ 
 #### Check status
-
+ 
 ```bash
 agents status
 ```
-Shows which agent is currently active.
+Shows which persona is currently active.
+ 
+#### View version
+ 
+```bash
+agents version
+```
+Print the version number of Agent Smith.
 
 ## Directory Structure
 

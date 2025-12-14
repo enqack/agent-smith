@@ -20,12 +20,12 @@ func getStatusFilePath() (string, error) {
 		return filepath.Join(filepath.Dir(configFile), "status.yaml"), nil
 	}
 
-	// Fallback to default user config directory
-	home, err := os.UserHomeDir()
+	// Fallback to XDG State Home
+	stateHome, err := getStateHome()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(home, ".config", "agent-smith", "status.yaml"), nil
+	return filepath.Join(stateHome, "agent-smith", "status.yaml"), nil
 }
 
 func loadState() (*StatusState, error) {

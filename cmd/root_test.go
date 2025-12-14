@@ -16,10 +16,15 @@ func TestInitConfigDefaults(t *testing.T) {
 	}
 	defer os.RemoveAll(tempDir)
 
-	// Mock HOME
+	// Mock HOME and XDG vars
 	originalHome := os.Getenv("HOME")
 	defer os.Setenv("HOME", originalHome)
 	os.Setenv("HOME", tempDir)
+
+	os.Setenv("XDG_CONFIG_HOME", filepath.Join(tempDir, ".config"))
+	os.Setenv("XDG_DATA_HOME", filepath.Join(tempDir, ".local", "share"))
+	defer os.Unsetenv("XDG_CONFIG_HOME")
+	defer os.Unsetenv("XDG_DATA_HOME")
 
 	// Reset viper
 	viper.Reset()
@@ -35,13 +40,13 @@ func TestInitConfigDefaults(t *testing.T) {
 	}
 
 	// Verify agents_dir default
-	// It should contain ~/.config/agent-smith/agents and /usr/share/agent-smith/agents
+	// It should contain ~/.config/agent-smith/personas and /usr/share/agent-smith/personas
 	agentsDirs := viper.GetStringSlice("agents_dir")
 	if len(agentsDirs) < 2 {
 		t.Errorf("Expected at least 2 default agents dirs, got %d", len(agentsDirs))
 	}
 
-	expectedUserAgents := filepath.Join(tempDir, ".config", "agent-smith", "agents")
+	expectedUserAgents := filepath.Join(tempDir, ".local", "share", "agent-smith", "personas")
 	foundUser := false
 	for _, dir := range agentsDirs {
 		if dir == expectedUserAgents {
@@ -62,10 +67,13 @@ func TestInitConfigCreateDirs(t *testing.T) {
 	}
 	defer os.RemoveAll(tempDir)
 
-	// Mock HOME
+	// Mock HOME and XDG vars
 	originalHome := os.Getenv("HOME")
 	defer os.Setenv("HOME", originalHome)
 	os.Setenv("HOME", tempDir)
+
+	os.Setenv("XDG_CONFIG_HOME", filepath.Join(tempDir, ".config"))
+	defer os.Unsetenv("XDG_CONFIG_HOME")
 
 	// Reset viper
 	viper.Reset()

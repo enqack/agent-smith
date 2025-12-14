@@ -106,7 +106,7 @@ target_file: "%s"
 	if err != nil {
 		t.Fatalf("use failed: %v\nOutput: %s", err, out)
 	}
-	if !strings.Contains(out, "Switched to agent: coder") {
+	if !strings.Contains(out, "Persona switched: coder") {
 		t.Errorf("use output unexpected:\n%s", out)
 	}
 

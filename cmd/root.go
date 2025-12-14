@@ -15,8 +15,9 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "agents",
 	Short: "An agent version control program",
-	Long: `Agents is a CLI tool for managing AGENTS.md symlinks,
-allowing users to switch between different agent personas.`,
+	Long: `agents - Agent Smith persona manager
+
+Manage AGENTS.md symlinks to switch between different agent personas.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -45,20 +46,21 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Search config in home directory and /etc/agent-smith
-		home, err := os.UserHomeDir()
+		// Search config in XDG_CONFIG_HOME/agent-smith (e.g. ~/.config/agent-smith)
+		// and /etc/agent-smith
+		configHome, err := getConfigHome()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		viper.AddConfigPath(filepath.Join(home, ".config", "agent-smith"))
+		viper.AddConfigPath(filepath.Join(configHome, "agent-smith"))
 		viper.AddConfigPath("/etc/agent-smith")
 		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
 
 		// Ensure local config directory exists
-		configDir := filepath.Join(home, ".config", "agent-smith")
+		configDir := filepath.Join(configHome, "agent-smith")
 		if err := os.MkdirAll(configDir, 0755); err != nil {
 			// Not fatal, but good to know
 			// fmt.Printf("Warning: Could not create config directory: %v\n", err)
@@ -67,17 +69,19 @@ func initConfig() {
 
 	// Set defaults
 	var defaultAgentsDirs []string
-	home, err := os.UserHomeDir()
+	dataHome, err := getDataHome()
 	if err == nil {
-		defaultAgentsDirs = append(defaultAgentsDirs, filepath.Join(home, ".config", "agent-smith", "agents"))
+		defaultAgentsDirs = append(defaultAgentsDirs, filepath.Join(dataHome, "agent-smith", "personas"))
 	}
-	defaultAgentsDirs = append(defaultAgentsDirs, "/usr/share/agent-smith/agents")
+	defaultAgentsDirs = append(defaultAgentsDirs, "/usr/share/agent-smith/personas")
 
 	viper.SetDefault("agents_dir", defaultAgentsDirs)
+
+	configHome, err := getConfigHome()
 	if err == nil {
-		viper.SetDefault("target_file", filepath.Join(home, ".config", "agents", "AGENTS.md"))
+		viper.SetDefault("target_file", filepath.Join(configHome, "agents", "AGENTS.md"))
 	} else {
-		// Fallback if home directory not found (unlikely for user)
+		// Fallback
 		viper.SetDefault("target_file", "AGENTS.md")
 	}
 

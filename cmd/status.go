@@ -12,8 +12,8 @@ import (
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status",
-	Short: "Show current agent status",
-	Long:  `Show which agent persona is currently active by checking the AGENTS.md symlink.`,
+	Short: "Show current persona status",
+	Long:  `Show which persona is currently active by checking the AGENTS.md symlink.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		targetFile := viper.GetString("target_file")
 
@@ -28,7 +28,7 @@ var statusCmd = &cobra.Command{
 		info, err := os.Lstat(targetFile)
 		if err != nil {
 			if os.IsNotExist(err) {
-				fmt.Printf("No agent currently selected (File %s does not exist)\n", targetFile)
+				fmt.Printf("No persona currently selected (File %s does not exist)\n", targetFile)
 				return
 			}
 			fmt.Printf("Error checking status: %v\n", err)
@@ -41,7 +41,6 @@ var statusCmd = &cobra.Command{
 				fmt.Printf("Error reading link: %v\n", err)
 				return
 			}
-			fmt.Printf("Current Agent: %s -> %s\n", targetFile, linkDest)
 
 			// Try to resolve the persona name
 			base := filepath.Base(linkDest)

@@ -17,10 +17,13 @@ func TestStatePersistence(t *testing.T) {
 	}
 	defer os.RemoveAll(tempDir)
 
-	// Mock HOME to point to tempDir so default paths work
+	// Mock HOME and XDG vars
 	originalHome := os.Getenv("HOME")
 	defer os.Setenv("HOME", originalHome)
 	os.Setenv("HOME", tempDir)
+
+	os.Setenv("XDG_STATE_HOME", filepath.Join(tempDir, ".local", "state"))
+	defer os.Unsetenv("XDG_STATE_HOME")
 
 	// Test 1: Save state to default location (no config file used)
 	viper.Reset()           // Ensure clean viper state
@@ -34,7 +37,7 @@ func TestStatePersistence(t *testing.T) {
 	}
 
 	// Verify file exists in default location
-	expectedPath := filepath.Join(tempDir, ".config", "agent-smith", "status.yaml")
+	expectedPath := filepath.Join(tempDir, ".local", "state", "agent-smith", "status.yaml")
 	if _, err := os.Stat(expectedPath); os.IsNotExist(err) {
 		t.Errorf("Expected status file at %s, but executed not found", expectedPath)
 	}

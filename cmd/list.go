@@ -12,8 +12,8 @@ import (
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List available agent personas",
-	Long: `List all available agent personas found in the configured agents directory.
+	Short: "List available personas",
+	Long: `List all available personas found in the configured agents directory.
 Personas are defined in files named AGENTS.<persona>.md`,
 	Run: func(cmd *cobra.Command, args []string) {
 		agentsDirs := viper.GetStringSlice("agents_dir")
@@ -24,7 +24,7 @@ Personas are defined in files named AGENTS.<persona>.md`,
 			}
 		}
 
-		fmt.Println("Available Agents:")
+		fmt.Println("Available Personas:")
 		foundAny := false
 
 		seen := make(map[string]bool)
@@ -64,7 +64,7 @@ Personas are defined in files named AGENTS.<persona>.md`,
 		}
 
 		if !foundAny {
-			fmt.Println("  (No agents found)")
+			fmt.Println("  (No personas found)")
 		}
 	},
 }
