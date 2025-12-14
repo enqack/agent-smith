@@ -1,35 +1,45 @@
 version: 2
 
-project_name: agent-smith
+project_name: agents
 
 builds:
-  - id: agents
-    main: ./main.go
-    binary: agents
-    env:
+  - env:
       - CGO_ENABLED=0
     goos:
       - linux
-      - darwin
       - windows
+      - darwin
     goarch:
       - amd64
       - arm64
+    main: ./cmd/agents/main.go
     ldflags:
-      - -s -w -X agent-smith/cmd.Version={{ .Version }}
+      - -s -w -X main.version={{.Version}}
 
 archives:
-  - builds: [agents]
-    format: tar.gz
+  - format: tar.gz
+    # this name template makes the archive name compatible with the standard naming
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    # use zip for windows archives
     format_overrides:
       - goos: windows
         format: zip
-    name_template: >-
-      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
 
 checksum:
-  name_template: checksums.txt
+  name_template: 'checksums.txt'
 
-release:
-  prerelease: auto
-  draft: false
+snapshot:
+  version_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
