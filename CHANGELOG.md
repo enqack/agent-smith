@@ -2,15 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2025-12-14
+
+### Windows Support
+- **Paths**: Updated path resolution to respect `%APPDATA%` and `%LOCALAPPDATA%` on Windows.
+- **Symlinks**: Added detection for Windows runtime to provide helpful error messages about Developer Mode/Admin privileges.
+
 ## [0.3.0] - 2025-12-14
 
-### Documentation System Overhaul
-- **Read the Docs Integration**: Migrated documentation system to Sphinx + MyST + Furo theme.
-- **Documentation Map**: Created `docs/index.md` as the unified entry point for guides and reference manual.
-- **Canonical Source Linking**: Linked root documents (`CONTRIBUTING.md`, `CHANGELOG.md`, `LICENSE`) into `docs/` to avoid duplication.
-- **Build System**: Updated `flake.nix` and `magefile.go` to support Sphinx builds.
-- **CI/CD**: Added `Build Docs` step to GitHub Actions.
-- **Cleanup**: Removed deprecated `mkdocs.yml`.
 
 ### Refactoring & Architecture
 

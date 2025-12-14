@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"agent-smith/internal/config"
 )
@@ -129,7 +130,12 @@ func ApplyPersona(persona string, agentsDirs []string, targets []config.TargetCo
 			}
 
 			if err := os.Symlink(absAgentPath, targetPath); err != nil {
-				err = fmt.Errorf("error creating symlink %s: %w", targetPath, err)
+				// Enhance error message for Windows users
+				if runtime.GOOS == "windows" {
+					err = fmt.Errorf("error creating symlink %s (on Windows, ensure Developer Mode is enabled or run as Administrator): %w", targetPath, err)
+				} else {
+					err = fmt.Errorf("error creating symlink %s: %w", targetPath, err)
+				}
 				fmt.Println(err)
 				applyErrors = append(applyErrors, err)
 				continue
