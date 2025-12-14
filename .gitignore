@@ -32,3 +32,6 @@ site/
 
 # Sphinx output
 docs/_build/
+
+# CI/Release artifacts
+RELEASE_NOTES.md
