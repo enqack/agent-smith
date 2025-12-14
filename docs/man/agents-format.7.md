@@ -44,7 +44,7 @@ Because the Canonical Target is a standard filesystem symlink, you can modify it
 **Source of Truth Pattern:**
 1. **agents**(1) inspects the Canonical Target to determine the Active Persona.
 2. If the Canonical Target has changed manually (Drift), **agents**(1) accepts this as the new valid state.
-3. **agents-reconcile**(1) forces all other configured targets (copies, other links) to match the Active Persona.
+3. **agents**(1) (via `reconcile`) forces all other configured targets (copies, other links) to match the Active Persona.
 
 # SEE ALSO
 

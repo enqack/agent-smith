@@ -1,6 +1,6 @@
 # Agent Smith (agents)
 
-**Agent Smith** (`agents`) is a specialized CLI tool for managing AI context files. It allows you to define multiple "personas" (confgurations of `AGENTS.md`) and instantly switch between them using symbolic links.
+**Agent Smith** (`agents`) is a specialized CLI tool for managing AI context files. It allows you to define multiple "personas" (configurations of `AGENTS.md`) and instantly switch between them using symbolic links.
 
 It implements the [AGENTS.md](https://agents.md/) specification pattern dynamically.
 

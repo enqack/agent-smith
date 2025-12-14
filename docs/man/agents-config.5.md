@@ -47,7 +47,7 @@ target_file: "/home/user/.config/agents/AGENTS.md"
 
 ## targets (list of objects)
 
-A list of additional targets to manage automatically. These will be updated by **agents-reconcile**(1) or **agents-use**(1).
+A list of additional targets to manage automatically. These will be updated by **agents**(1) (specifically the `reconcile` and `use` commands).
 
 Each target has:
 * **path**: The file path to update.
